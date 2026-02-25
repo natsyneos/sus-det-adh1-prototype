@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
+import { X } from 'lucide-react';
 import bgImage from '../../assets/bf8f2b863e3bdcc5b498287cc66cff8fb490e1d4.png';
-import Layer1 from '../../imports/Layer1';
-import Layer11493 from '../../imports/Layer1-14-93';
+import { Footer } from './Footer';
 
 interface FinalScreenProps {
   onRestart: () => void;
@@ -14,13 +14,13 @@ export function FinalScreen({ onRestart }: FinalScreenProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#1a1a1c] relative overflow-hidden flex flex-col items-center justify-center px-16 py-12"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-center px-8 py-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={bgImage} 
-          alt="" 
+        <img
+          src={bgImage}
+          alt=""
           className="w-full h-full object-cover"
         />
       </div>
@@ -33,17 +33,21 @@ export function FinalScreen({ onRestart }: FinalScreenProps) {
         <div className="fog-layer"></div>
       </div>
 
-      {/* Corporate logo at bottom right */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.6 }}
-        className="absolute bottom-[132px] right-[67px] z-10 w-[320px]"
+      {/* Exit button */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        onClick={onRestart}
+        className="absolute top-8 right-8 z-50 bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3
+                   text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e]
+                   transition-all duration-300 flex items-center gap-2"
       >
-        <Layer1 />
-      </motion.div>
+        <X className="w-4 h-4" />
+        Exit
+      </motion.button>
 
-      <div className="relative z-10 max-w-4xl w-full text-center -mt-[250px]">
+      <div className="relative z-10 max-w-4xl w-full text-center">
         {/* Main message */}
         <motion.h2
           initial={{ y: -30, opacity: 0 }}
@@ -67,34 +71,24 @@ export function FinalScreen({ onRestart }: FinalScreenProps) {
             Learn more at <span className="text-[#FFC358]">ADH1.com</span>
           </p>
 
-          <div className="flex items-center justify-center gap-20">
+          <div className="flex items-center justify-center">
             <button
               onClick={onRestart}
               className="group relative bg-[#252528] border border-[#5a5a5e] rounded-lg px-12 py-5
                          text-white hover:border-[#7a7a7e] transition-all duration-400
                          hover:bg-[#2a2a2e] overflow-hidden"
             >
-              {/* Subtle glow on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#4a4a4e]/20 to-transparent 
+              <div className="absolute inset-0 bg-gradient-to-r from-[#4a4a4e]/20 to-transparent
                               opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
-              
               <span className="relative z-10 text-xl font-light tracking-wide">
                 Back to Start
               </span>
             </button>
-
-            {/* QR Code CTA */}
-            <div className="flex items-center gap-4">
-              <div className="h-[60px] w-[60px]">
-                <Layer11493 />
-              </div>
-              <p className="text-lg font-light text-gray-300 max-w-[180px] leading-snug text-left">
-                Scan to download<br />the whitepaper
-              </p>
-            </div>
           </div>
         </motion.div>
       </div>
+
+      <Footer />
     </motion.div>
   );
 }

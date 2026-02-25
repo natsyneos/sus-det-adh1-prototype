@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
 import bgImage from '../../assets/033b0a9678b326af3e1307879cea8820c2f1418b.png';
+import { Footer } from './Footer';
 
 interface QuizScreenProps {
   topic: string;
   onComplete: () => void;
   onNext: () => void;
   onBackToStart: () => void;
-  lightsOn: boolean;
-  onToggleLights: () => void;
 }
 
 interface QuizData {
@@ -73,102 +72,31 @@ const quizDataMap: Record<string, QuizData> = {
   }
 };
 
-export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn, onToggleLights }: QuizScreenProps) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [isUserControlling, setIsUserControlling] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const roamAnimRef = useRef<number>(0);
-
-  // Roaming spotlight animation
-  useEffect(() => {
-    if (lightsOn || selectedAnswer) return;
-
-    const animate = (now: number) => {
-      const elapsed = now / 1000;
-      if (!isUserControlling && containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const x = cx + Math.sin(elapsed * 0.6) * cx * 0.55;
-        const y = cy + Math.cos(elapsed * 0.4) * cy * 0.5;
-        setMousePosition({ x, y });
-      }
-      roamAnimRef.current = requestAnimationFrame(animate);
-    };
-
-    roamAnimRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(roamAnimRef.current);
-  }, [isUserControlling, lightsOn, selectedAnswer]);
-
-  // Track mouse for user control
-  useEffect(() => {
-    if (lightsOn || selectedAnswer) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-      }
-      setIsUserControlling(true);
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-      inactivityTimerRef.current = setTimeout(() => {
-        setIsUserControlling(false);
-      }, 2000);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-    };
-  }, [lightsOn, selectedAnswer]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-      cancelAnimationFrame(roamAnimRef.current);
-    };
-  }, []);
 
   const handleAnswerSelect = (answer: string) => {
     if (!selectedAnswer) {
       setSelectedAnswer(answer);
       setTimeout(() => setShowExplanation(true), 600);
-      autoAdvanceTimerRef.current = setTimeout(() => onComplete(), 6000);
     }
   };
 
   const handleNextClick = () => {
-    if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
     onNext();
-  };
-
-  const handleBackClick = () => {
-    if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
-    onBackToStart();
   };
 
   const quizData = quizDataMap[topic];
   const answers = quizData ? quizData.answers : [];
-  const showSpotlight = !lightsOn && !selectedAnswer;
 
   return (
     <motion.div
-      ref={containerRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#1a1a1c] relative overflow-hidden flex flex-col items-center justify-center px-16 py-12"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-center px-8 py-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -176,37 +104,23 @@ export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn,
       </div>
 
       {/* Animated fog overlay */}
-      {!lightsOn && (
-        <div className="absolute inset-0 opacity-40 z-[1]">
-          <div className="fog-layer"></div>
-        </div>
-      )}
+      <div className="absolute inset-0 opacity-40 z-[1]">
+        <div className="fog-layer"></div>
+      </div>
 
-      {/* Close button */}
+      {/* Exit button */}
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
-        onClick={handleBackClick}
-        className="absolute top-8 right-8 z-50 group p-3 rounded-full border border-[#5a5a5e] 
-                   bg-[#252528] hover:bg-[#2a2a2e] hover:border-[#7a7a7e] 
-                   transition-all duration-400"
+        onClick={onBackToStart}
+        className="absolute top-8 right-8 z-50 bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3
+                   text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e]
+                   transition-all duration-300 flex items-center gap-2"
       >
-        <X className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-400" />
+        <X className="w-4 h-4" />
+        Exit
       </motion.button>
-
-      {/* Spotlight overlay */}
-      {showSpotlight && (
-        <div
-          className="absolute inset-0 pointer-events-none z-20"
-          style={{
-            background: `radial-gradient(circle 280px at ${mousePosition.x}px ${mousePosition.y}px, 
-                         transparent 0%, 
-                         transparent 40%, 
-                         rgba(0, 0, 0, 0.7) 100%)`
-          }}
-        />
-      )}
 
       <div className="relative z-10 max-w-5xl w-full">
         {/* Question */}
@@ -234,7 +148,7 @@ export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn,
                 transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
                 onClick={() => handleAnswerSelect(answer.text)}
                 disabled={!!selectedAnswer}
-                className={`relative bg-[#252528] border rounded-lg px-12 py-8 
+                className={`relative bg-[#252528] border rounded-lg px-12 py-8
                            text-white text-2xl font-light tracking-wide text-left
                            transition-all duration-500 overflow-hidden
                            ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
@@ -257,16 +171,6 @@ export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn,
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
                     className="absolute inset-0 bg-gradient-to-r from-[#d64545]/20 via-[#d64545]/10 to-transparent"
-                  />
-                )}
-                {!selectedAnswer && (
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: `radial-gradient(circle 200px at ${mousePosition.x - (containerRef.current?.getBoundingClientRect().left || 0)}px ${mousePosition.y - (containerRef.current?.getBoundingClientRect().top || 0)}px, 
-                                   rgba(255, 255, 255, 0.05) 0%, 
-                                   transparent 70%)`
-                    }}
                   />
                 )}
                 <span className="relative z-10">{answer.text}</span>
@@ -297,7 +201,7 @@ export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn,
                   className="group relative bg-[#FFC358] border border-[#FFC358] rounded-lg px-10 py-4
                              text-[#1a1a1c] hover:bg-[#ffce75] transition-all duration-400 overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent 
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent
                                   opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
                   <span className="relative z-10 text-lg font-normal tracking-wide">Next Question</span>
                 </motion.button>
@@ -307,14 +211,7 @@ export function QuizScreen({ topic, onComplete, onNext, onBackToStart, lightsOn,
         </AnimatePresence>
       </div>
 
-      {/* Lights On toggle */}
-      <button
-        onClick={onToggleLights}
-        className="absolute bottom-6 left-8 z-50 text-xs font-light tracking-widest uppercase opacity-40 hover:opacity-80 transition-opacity duration-300 text-white flex items-center gap-2"
-      >
-        <span className={`inline-block w-2 h-2 rounded-full border border-white ${lightsOn ? 'bg-white' : 'bg-transparent'}`}></span>
-        {lightsOn ? 'Lights Off' : 'Lights On'}
-      </button>
+      <Footer />
     </motion.div>
   );
 }
