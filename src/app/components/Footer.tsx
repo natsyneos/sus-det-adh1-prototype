@@ -12,7 +12,11 @@ const references = [
   "Roszko KL, et al. Autosomal Dominant Hypocalcemia Type 1: A Systematic Review. J Bone Miner Res. 2022.",
 ];
 
-export function Footer() {
+interface FooterProps {
+  onExit?: () => void;
+}
+
+export function Footer({ onExit }: FooterProps) {
   const [showReferences, setShowReferences] = useState(false);
 
   return (
@@ -28,13 +32,24 @@ export function Footer() {
           </p>
         </div>
 
-        {/* Right side: References button */}
-        <button
-          onClick={() => setShowReferences(true)}
-          className="bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3 text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e] transition-all duration-300"
-        >
-          References
-        </button>
+        {/* Right side: References + optional Exit */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowReferences(true)}
+            className="bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3 text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e] transition-all duration-300"
+          >
+            References
+          </button>
+          {onExit && (
+            <button
+              onClick={onExit}
+              className="bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3 text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e] transition-all duration-300 flex items-center gap-2"
+            >
+              <X className="w-4 h-4" />
+              Exit
+            </button>
+          )}
+        </div>
       </div>
 
       {/* References modal */}

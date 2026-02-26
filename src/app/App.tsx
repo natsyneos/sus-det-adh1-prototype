@@ -27,6 +27,7 @@ export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scale, setScale] = useState(1);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     const updateScale = () => {
@@ -39,16 +40,15 @@ export default function App() {
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
+  const handleAnswerResult = (correct: boolean) => {
+    if (correct) setScore(prev => prev + 100);
+  };
+
   const handleTopicSelect = (topic: string) => {
     setIsTransitioning(true);
     setSelectedTopic(topic);
     setCurrentQuestionIndex(0);
     setCurrentScreen('quiz');
-  };
-
-  const handleQuizComplete = () => {
-    setIsTransitioning(true);
-    setCurrentScreen('final');
   };
 
   const handleNextQuestion = () => {
@@ -67,6 +67,7 @@ export default function App() {
     setCurrentScreen('landing');
     setSelectedTopic('');
     setCurrentQuestionIndex(0);
+    setScore(0);
   };
 
   const handleRestart = () => {
@@ -74,6 +75,7 @@ export default function App() {
     setCurrentScreen('landing');
     setSelectedTopic('');
     setCurrentQuestionIndex(0);
+    setScore(0);
   };
 
   return (
@@ -116,13 +118,16 @@ export default function App() {
               <QuizScreen
                 key={`quiz-${currentQuestionIndex}`}
                 topic={selectedTopic}
-                onComplete={handleQuizComplete}
+                questionNumber={currentQuestionIndex + 1}
+                totalQuestions={topics.length}
+                currentScore={score}
+                onAnswerResult={handleAnswerResult}
                 onNext={handleNextQuestion}
                 onBackToStart={handleBackToStart}
               />
             )}
             {currentScreen === 'final' && (
-              <FinalScreen key="final" onRestart={handleRestart} />
+              <FinalScreen key="final" onRestart={handleRestart} score={score} />
             )}
           </AnimatePresence>
         </div>

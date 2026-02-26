@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
-import bgImage from '../../assets/033b0a9678b326af3e1307879cea8820c2f1418b.png';
+import bgImage from '../../assets/bg-v1.jpg';
 import { Footer } from './Footer';
 
 interface QuizScreenProps {
   topic: string;
-  onComplete: () => void;
+  questionNumber: number;
+  totalQuestions: number;
+  currentScore: number;
+  onAnswerResult: (correct: boolean) => void;
   onNext: () => void;
   onBackToStart: () => void;
 }
@@ -72,23 +74,23 @@ const quizDataMap: Record<string, QuizData> = {
   }
 };
 
-export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
+export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore, onAnswerResult, onNext, onBackToStart }: QuizScreenProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  const handleAnswerSelect = (answer: string) => {
+  const handleAnswerSelect = (answer: { text: string; correct: boolean }) => {
     if (!selectedAnswer) {
-      setSelectedAnswer(answer);
+      setSelectedAnswer(answer.text);
+      onAnswerResult(answer.correct);
       setTimeout(() => setShowExplanation(true), 600);
     }
   };
 
-  const handleNextClick = () => {
-    onNext();
-  };
-
   const quizData = quizDataMap[topic];
   const answers = quizData ? quizData.answers : [];
+  const progressBefore = ((questionNumber - 1) / totalQuestions) * 100;
+  const progressAfter = (questionNumber / totalQuestions) * 100;
+  const isLastQuestion = questionNumber === totalQuestions;
 
   return (
     <motion.div
@@ -96,7 +98,7 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-center px-8 py-10"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-center px-8 pt-36 pb-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -108,19 +110,32 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
         <div className="fog-layer"></div>
       </div>
 
-      {/* Exit button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.4 }}
-        onClick={onBackToStart}
-        className="absolute top-8 right-8 z-50 bg-[#252528] border border-[#5a5a5e] rounded-lg px-6 py-3
-                   text-white text-sm font-light tracking-wide hover:bg-[#2a2a2e]
-                   transition-all duration-300 flex items-center gap-2"
+      {/* Progress header — black bar */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+        className="absolute top-0 left-0 right-0 z-50 bg-black/40"
       >
-        <X className="w-4 h-4" />
-        Exit
-      </motion.button>
+        <div className="flex items-center gap-5 px-8 pt-6 pb-5">
+          <span className="text-white text-xl font-light tracking-wide leading-snug text-center">
+            <span className="block">Question</span>
+            <span className="block">{questionNumber} of {totalQuestions}</span>
+          </span>
+          <div className="flex-1 h-4 bg-white/20 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-[#FFC358] rounded-full"
+              initial={{ width: `${progressBefore}%` }}
+              animate={{ width: `${progressAfter}%` }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            />
+          </div>
+          <span className="text-[#FFC358] text-3xl font-bold whitespace-nowrap">
+            {currentScore} pts
+          </span>
+        </div>
+      </motion.div>
+
 
       <div className="relative z-10 max-w-5xl w-full">
         {/* Question */}
@@ -128,7 +143,7 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-4xl font-light tracking-wide text-white mb-16 text-center leading-relaxed"
+          className="text-4xl font-light tracking-wide text-white mb-16 text-center leading-[1.25]"
         >
           {quizData ? quizData.question : "What is the average diagnostic time for patients living with ADH1?"}
         </motion.h2>
@@ -146,7 +161,7 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: shouldDim ? 0.3 : 1, scale: isSelected ? 1.02 : 1 }}
                 transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-                onClick={() => handleAnswerSelect(answer.text)}
+                onClick={() => handleAnswerSelect(answer)}
                 disabled={!!selectedAnswer}
                 className={`relative bg-[#252528] border rounded-lg px-12 py-8
                            text-white text-2xl font-light tracking-wide text-left
@@ -189,7 +204,7 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
               transition={{ duration: 0.6 }}
               className="text-center"
             >
-              <p className="text-2xl font-bold text-[#FFC358] leading-relaxed mb-12 text-left">
+              <p className="text-2xl font-bold text-[#FFC358] leading-[1.25] mb-12 text-left">
                 {quizData ? quizData.explanation : "There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."}
               </p>
               <div className="flex items-center justify-center gap-6 mt-8">
@@ -197,13 +212,15 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  onClick={handleNextClick}
+                  onClick={onNext}
                   className="group relative bg-[#FFC358] border border-[#FFC358] rounded-lg px-10 py-4
                              text-[#1a1a1c] hover:bg-[#ffce75] transition-all duration-400 overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent
                                   opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
-                  <span className="relative z-10 text-lg font-normal tracking-wide">Next Question</span>
+                  <span className="relative z-10 text-lg font-normal tracking-wide">
+                    {isLastQuestion ? 'See Results' : 'Next Question'}
+                  </span>
                 </motion.button>
               </div>
             </motion.div>
@@ -211,7 +228,7 @@ export function QuizScreen({ topic, onNext, onBackToStart }: QuizScreenProps) {
         </AnimatePresence>
       </div>
 
-      <Footer />
+      <Footer onExit={onBackToStart} />
     </motion.div>
   );
 }

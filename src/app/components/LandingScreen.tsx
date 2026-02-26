@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import bgImage from '../../assets/033b0a9678b326af3e1307879cea8820c2f1418b.png';
+import bgImage from '../../assets/bg-v1.jpg';
 import { Footer } from './Footer';
 
 interface LandingScreenProps {
@@ -44,7 +44,7 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
         <div className="fog-layer"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl w-full">
+      <div className="relative z-10 max-w-7xl w-full -mt-[72px]">
         {/* Main heading */}
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
