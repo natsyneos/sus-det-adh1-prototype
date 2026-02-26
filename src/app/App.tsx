@@ -4,7 +4,8 @@ import { LandingScreen } from './components/LandingScreen';
 import { QuizScreen } from './components/QuizScreen';
 import { FinalScreen } from './components/FinalScreen';
 import { PasswordGate } from './components/PasswordGate';
-import { FogOverlay } from './components/FogOverlay';
+import { FogOverlay, FogConfig, DEFAULT_FOG_CONFIG } from './components/FogOverlay';
+import { FogDebugConsole } from './components/FogDebugConsole';
 
 type Screen = 'landing' | 'quiz' | 'final';
 
@@ -29,6 +30,7 @@ export default function App() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scale, setScale] = useState(1);
   const [score, setScore] = useState(0);
+  const [fogConfig, setFogConfig] = useState<FogConfig>(DEFAULT_FOG_CONFIG);
 
   useEffect(() => {
     const updateScale = () => {
@@ -133,7 +135,7 @@ export default function App() {
 
           {/* WebGL fog — rendered last so it paints above all screen content (z-[50]).
               The black transition flash uses z-[100] to still appear above the fog. */}
-          <FogOverlay density={fogDensity} scale={scale} />
+          <FogOverlay density={fogDensity} scale={scale} config={fogConfig} />
 
           <AnimatePresence>
             {isTransitioning && (
@@ -149,6 +151,13 @@ export default function App() {
           </AnimatePresence>
         </div>
       </div>
+      {/* Debug console — fixed to viewport so it lives in the black letterbox
+          area and never overlaps the 748×1330 design canvas. Remove when done. */}
+      <FogDebugConsole
+        config={fogConfig}
+        autoDensity={fogDensity}
+        onChange={setFogConfig}
+      />
     </PasswordGate>
   );
 }
