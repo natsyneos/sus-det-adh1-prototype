@@ -4,6 +4,7 @@ import { LandingScreen } from './components/LandingScreen';
 import { QuizScreen } from './components/QuizScreen';
 import { FinalScreen } from './components/FinalScreen';
 import { PasswordGate } from './components/PasswordGate';
+import { FogOverlay } from './components/FogOverlay';
 
 type Screen = 'landing' | 'quiz' | 'final';
 
@@ -78,6 +79,18 @@ export default function App() {
     setScore(0);
   };
 
+  // Fog density:
+  //   landing      → 1.0 (maximum)
+  //   quiz q1      → 1.0, linear ramp down to 0.35 at q6
+  //   final screen → 0.0 (fully clear — full reveal)
+  const MIN_QUIZ_DENSITY = 0.35;
+  const fogDensity = (() => {
+    if (currentScreen === 'final')   return 0;
+    if (currentScreen === 'landing') return 1;
+    // Linear interpolation: index 0 → 1.0, index (n-1) → MIN_QUIZ_DENSITY
+    return 1.0 - currentQuestionIndex * (1.0 - MIN_QUIZ_DENSITY) / (topics.length - 1);
+  })();
+
   return (
     <PasswordGate>
       {/* Viewport: black letterbox bars fill whatever the browser window is */}
@@ -94,19 +107,6 @@ export default function App() {
             transformOrigin: 'center center',
           }}
         >
-          <AnimatePresence>
-            {isTransitioning && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                onAnimationComplete={() => setIsTransitioning(false)}
-                className="absolute inset-0 bg-[#000000] z-50 pointer-events-none"
-              />
-            )}
-          </AnimatePresence>
-
           <AnimatePresence mode="wait">
             {currentScreen === 'landing' && (
               <LandingScreen
@@ -128,6 +128,23 @@ export default function App() {
             )}
             {currentScreen === 'final' && (
               <FinalScreen key="final" onRestart={handleRestart} score={score} />
+            )}
+          </AnimatePresence>
+
+          {/* WebGL fog — rendered last so it paints above all screen content (z-[50]).
+              The black transition flash uses z-[100] to still appear above the fog. */}
+          <FogOverlay density={fogDensity} scale={scale} />
+
+          <AnimatePresence>
+            {isTransitioning && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onAnimationComplete={() => setIsTransitioning(false)}
+                className="absolute inset-0 bg-[#000000] z-[100] pointer-events-none"
+              />
             )}
           </AnimatePresence>
         </div>

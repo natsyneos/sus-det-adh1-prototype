@@ -105,10 +105,6 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
         <img src={bgImage} alt="" className="w-full h-full object-cover" />
       </div>
 
-      {/* Animated fog overlay */}
-      <div className="absolute inset-0 opacity-40 z-[1]">
-        <div className="fog-layer"></div>
-      </div>
 
       {/* Progress header — black bar */}
       <motion.div

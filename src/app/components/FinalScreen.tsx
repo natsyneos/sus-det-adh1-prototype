@@ -107,13 +107,6 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
         <img src={bgImage} alt="" className="w-full h-full object-cover" />
       </div>
 
-      {/* Subtle dark overlay */}
-      <div className="absolute inset-0 bg-black/5 z-[1]"></div>
-
-      {/* Animated fog overlay */}
-      <div className="absolute inset-0 opacity-20 z-[2]">
-        <div className="fog-layer"></div>
-      </div>
 
 
       <div className="relative z-10 max-w-4xl w-full text-center">

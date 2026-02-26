@@ -39,10 +39,6 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
         <img src={bgImage} alt="" className="w-full h-full object-cover" />
       </div>
 
-      {/* Animated fog overlay */}
-      <div className="absolute inset-0 opacity-30 z-[1]">
-        <div className="fog-layer"></div>
-      </div>
 
       <div className="relative z-10 max-w-7xl w-full -mt-[72px]">
         {/* Main heading */}
