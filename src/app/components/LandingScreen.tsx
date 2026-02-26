@@ -40,13 +40,13 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
       </div>
 
 
-      <div className="relative z-10 max-w-7xl w-full -mt-[72px]">
+      <div className="relative z-10 max-w-7xl w-full -mt-[160px]">
         {/* Main heading */}
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-7xl font-light tracking-wide mb-6 text-center"
+          className="text-7xl font-light tracking-wide mb-16 text-center"
         >
           <span className="text-white">SUSPECT &</span>
           <br />

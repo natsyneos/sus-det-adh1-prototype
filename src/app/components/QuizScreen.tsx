@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import bgImage from '../../assets/bg-v1.jpg';
 import { Footer } from './Footer';
@@ -78,6 +78,12 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
+  // Reset per-question state when question changes (without remounting)
+  useEffect(() => {
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+  }, [questionNumber]);
+
   const handleAnswerSelect = (answer: { text: string; correct: boolean }) => {
     if (!selectedAnswer) {
       setSelectedAnswer(answer.text);
@@ -134,93 +140,103 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
 
 
       <div className="relative z-10 max-w-5xl w-full">
-        {/* Question */}
-        <motion.h2
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-4xl font-light tracking-wide text-white mb-16 text-center leading-[1.25]"
-        >
-          {quizData ? quizData.question : "What is the average diagnostic time for patients living with ADH1?"}
-        </motion.h2>
-
-        {/* Answer options */}
-        <div className="flex flex-col gap-6 mb-12">
-          {answers.map((answer, index) => {
-            const isSelected = selectedAnswer === answer.text;
-            const isCorrect = answer.correct;
-            const shouldDim = selectedAnswer && !isCorrect && !isSelected;
-
-            return (
-              <motion.button
-                key={answer.text}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: shouldDim ? 0.3 : 1, scale: isSelected ? 1.02 : 1 }}
-                transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-                onClick={() => handleAnswerSelect(answer)}
-                disabled={!!selectedAnswer}
-                className={`relative bg-[#252528] border rounded-lg px-12 py-8
-                           text-white text-2xl font-light tracking-wide text-left
-                           transition-all duration-500 overflow-hidden
-                           ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
-                           ${isSelected && isCorrect ? 'border-[#FFC358]' : ''}
-                           ${isSelected && !isCorrect ? 'border-[#d64545]' : ''}
-                           ${!isSelected ? 'border-[#3a3a3e]' : ''}
-                `}
-              >
-                {isSelected && isCorrect && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="absolute inset-0 bg-gradient-to-r from-[#FFC358]/20 via-[#FFC358]/10 to-transparent"
-                  />
-                )}
-                {isSelected && !isCorrect && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="absolute inset-0 bg-gradient-to-r from-[#d64545]/20 via-[#d64545]/10 to-transparent"
-                  />
-                )}
-                <span className="relative z-10">{answer.text}</span>
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Explanation */}
-        <AnimatePresence>
-          {showExplanation && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center"
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={questionNumber}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Question */}
+            <motion.h2
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="text-4xl font-light tracking-wide text-white mb-16 text-center leading-[1.25]"
             >
-              <p className="text-2xl font-bold text-[#FFC358] leading-[1.25] mb-12 text-left">
-                {quizData ? quizData.explanation : "There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."}
-              </p>
-              <div className="flex items-center justify-center gap-6 mt-8">
-                <motion.button
-                  initial={{ opacity: 0, y: 10 }}
+              {quizData ? quizData.question : "What is the average diagnostic time for patients living with ADH1?"}
+            </motion.h2>
+
+            {/* Answer options */}
+            <div className="flex flex-col gap-6 mb-12">
+              {answers.map((answer, index) => {
+                const isSelected = selectedAnswer === answer.text;
+                const isCorrect = answer.correct;
+                const shouldDim = selectedAnswer && !isCorrect && !isSelected;
+
+                return (
+                  <motion.button
+                    key={answer.text}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: shouldDim ? 0.3 : 1, scale: isSelected ? 1.02 : 1 }}
+                    transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
+                    onClick={() => handleAnswerSelect(answer)}
+                    disabled={!!selectedAnswer}
+                    className={`relative bg-[#252528] border rounded-lg px-12 py-8
+                               text-white text-2xl font-light tracking-wide text-left
+                               transition-all duration-500 overflow-hidden
+                               ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
+                               ${isSelected && isCorrect ? 'border-[#FFC358]' : ''}
+                               ${isSelected && !isCorrect ? 'border-[#d64545]' : ''}
+                               ${!isSelected ? 'border-[#3a3a3e]' : ''}
+                    `}
+                  >
+                    {isSelected && isCorrect && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="absolute inset-0 bg-gradient-to-r from-[#FFC358]/20 via-[#FFC358]/10 to-transparent"
+                      />
+                    )}
+                    {isSelected && !isCorrect && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="absolute inset-0 bg-gradient-to-r from-[#d64545]/20 via-[#d64545]/10 to-transparent"
+                      />
+                    )}
+                    <span className="relative z-10">{answer.text}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Explanation */}
+            <AnimatePresence>
+              {showExplanation && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  onClick={onNext}
-                  className="group relative bg-[#FFC358] border border-[#FFC358] rounded-lg px-10 py-4
-                             text-[#1a1a1c] hover:bg-[#ffce75] transition-all duration-400 overflow-hidden"
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
-                  <span className="relative z-10 text-lg font-normal tracking-wide">
-                    {isLastQuestion ? 'See Results' : 'Next Question'}
-                  </span>
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
+                  <p className="text-2xl font-bold text-[#FFC358] leading-[1.25] mb-12 text-left">
+                    {quizData ? quizData.explanation : "There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."}
+                  </p>
+                  <div className="flex items-center justify-center gap-6 mt-8">
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.5 }}
+                      onClick={onNext}
+                      className="group relative bg-[#FFC358] border border-[#FFC358] rounded-lg px-10 py-4
+                                 text-[#1a1a1c] hover:bg-[#ffce75] transition-all duration-400 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent
+                                      opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
+                      <span className="relative z-10 text-lg font-normal tracking-wide">
+                        {isLastQuestion ? 'See Results' : 'Next Question'}
+                      </span>
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </AnimatePresence>
       </div>
 

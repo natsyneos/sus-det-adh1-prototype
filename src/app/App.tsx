@@ -55,12 +55,14 @@ export default function App() {
   };
 
   const handleNextQuestion = () => {
-    setIsTransitioning(true);
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < topics.length) {
+      // Question-to-question: no flash, content transitions internally
       setSelectedTopic(topics[nextIndex]);
       setCurrentQuestionIndex(nextIndex);
     } else {
+      // Last question → final screen: use flash
+      setIsTransitioning(true);
       setCurrentScreen('final');
     }
   };
@@ -120,7 +122,7 @@ export default function App() {
             )}
             {currentScreen === 'quiz' && (
               <QuizScreen
-                key={`quiz-${currentQuestionIndex}`}
+                key="quiz"
                 topic={selectedTopic}
                 questionNumber={currentQuestionIndex + 1}
                 totalQuestions={topics.length}
