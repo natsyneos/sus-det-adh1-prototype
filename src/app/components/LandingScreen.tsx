@@ -36,7 +36,7 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
-        <img src={bgImage} alt="" className="w-full h-full object-cover" />
+        <img src={bgImage} alt="" draggable={false} className="w-full h-full object-cover" />
       </div>
 
 

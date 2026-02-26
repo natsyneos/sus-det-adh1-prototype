@@ -107,7 +107,9 @@ export default function App() {
             left: '50%',
             transform: `translate(-50%, -50%) scale(${scale})`,
             transformOrigin: 'center center',
+            userSelect: 'none',
           }}
+          onDragStart={e => e.preventDefault()}
         >
           <AnimatePresence mode="wait">
             {currentScreen === 'landing' && (
