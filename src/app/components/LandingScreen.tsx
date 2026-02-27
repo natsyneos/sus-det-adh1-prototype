@@ -16,16 +16,16 @@ interface LeaderboardEntry {
 const STORAGE_KEY = 'adh1-leaderboard';
 
 const SEED_ENTRIES: LeaderboardEntry[] = [
-  { initials: 'ACE', score: 400 },
-  { initials: 'PRO', score: 350 },
-  { initials: 'JDS', score: 300 },
-  { initials: 'MHC', score: 275 },
-  { initials: 'KLP', score: 250 },
+  { initials: 'ACE', score: 500 },
+  { initials: 'PRO', score: 400 },
+  { initials: 'JDS', score: 400 },
+  { initials: 'MHC', score: 300 },
+  { initials: 'KLP', score: 300 },
   { initials: 'BRT', score: 200 },
-  { initials: 'WXY', score: 175 },
-  { initials: 'FGH', score: 150 },
-  { initials: 'ZQP', score: 125 },
-  { initials: 'NVL', score: 100 },
+  { initials: 'TBK', score: 200 },
+  { initials: 'FGH', score: 200 },
+  { initials: 'ZQP', score: 100 },
+  { initials: 'RGM', score: 0 },
 ];
 
 function loadLeaderboard(): LeaderboardEntry[] {
