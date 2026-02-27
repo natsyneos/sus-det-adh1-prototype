@@ -108,7 +108,7 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
           animate={{ y: 0, opacity: 1, scale: isActive ? 1.02 : 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
           onClick={handleStart}
-          className="group relative bg-[#FFC358] rounded-lg px-8 py-6
+          className="group relative bg-[#FFC358] rounded-lg mt-10 px-8 py-6
                      text-[#1a1a1c] text-2xl font-bold tracking-wide
                      hover:bg-[#ffce75] transition-all duration-300 overflow-hidden
                      flex items-center gap-4"
