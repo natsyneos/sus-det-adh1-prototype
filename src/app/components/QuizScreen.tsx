@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Check, X } from 'lucide-react';
 import bgImage from '../../assets/bg-v1.jpg';
 import { Footer } from './Footer';
 
@@ -23,37 +24,37 @@ const quizDataMap: Record<string, QuizData> = {
   "What Is ADH1?": {
     question: "What is autosomal dominant hypocalcemia type 1 (ADH1)?",
     answers: [
-      { text: "A rare genetic condition caused by gain-of-function variants in the calcium-sensing receptor gene (CASR).", correct: true },
-      { text: "A condition caused by low calcium intake", correct: false },
-      { text: "An autoimmune form of hypoparathyroidism", correct: false }
+      { text: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene (CASR).", correct: true },
+      { text: "A hypocalcemic disorder caused by magnesium deficiency leading to impaired PTH secretion.", correct: false },
+      { text: "An autoimmune form of hypoparathyroidism.", correct: false }
     ],
-    explanation: "In ADH1, over-sensitive calcium-sensing receptor (CaSR) causes dysregulation of calcium homeostasis."
+    explanation: "In ADH1, overly-sensitive calcium-sensing receptors dysregulate calcium homeostasis."
   },
   "Mechanism of Disease": {
-    question: "Which statement describes how the mechanism of disease in ADH1 is distinct from other forms of hypoparathyroidism?",
+    question: "How is the mechanism of disease in ADH1 distinct from other forms of hypoparathyroidism?",
     answers: [
       { text: "ADH1 is solely a kidney-related condition.", correct: false },
-      { text: "ADH1 is caused by parathyroid gland injury.", correct: false },
-      { text: "In ADH1, the body misreads calcium levels due to malfunction of the CaSR protein.", correct: true }
+      { text: "ADH1 is caused by an injury to the parathyroid glands.", correct: false },
+      { text: "ADH1 is caused by the body misreading calcium levels due to a variant of the CASR gene.", correct: true }
     ],
-    explanation: "In ADH1, the calcium sensing receptor is too sensitive, \"tricking\" the body into believing low levels of calcium in the blood are normal, or normal levels are too high. As a result, the parathyroid glands don't produce enough parathyroid hormone, and the kidneys excrete too much calcium into the urine."
-  },
-  "Average Time to Diagnosis": {
-    question: "True or False: ADH1 is typically diagnosed at birth.",
-    answers: [
-      { text: "True", correct: false },
-      { text: "False", correct: true }
-    ],
-    explanation: "There is a 20-plus-year gap between median age of hypocalcemia diagnosis (4 years) and genetic confirmation of ADH1 (25 years)."
+    explanation: "In ADH1, the calcium-sensing receptors are too sensitive, \"tricking\" the body into believing low levels of calcium in the blood are normal or high. As a result, the parathyroid glands don't produce enough parathyroid hormone, and the kidneys excrete too much calcium into the urine."
   },
   "Clinical Presentation": {
     question: "What are the most common physical symptoms of ADH1?",
     answers: [
       { text: "Numbness, fatigue, tetany", correct: true },
-      { text: "Restless legs and anxiety", correct: false },
-      { text: "Paresthesia and insomnia", correct: false }
+      { text: "Restless legs, anxiety, and dry skin", correct: false },
+      { text: "Paresthesia, insomnia, and sensitivity to heat", correct: false }
     ],
-    explanation: "A common sign of ADH1 is low serum calcium, resulting in muscle cramps and spasms (tetany), and in severe cases seizures, laryngospasms, and arrhythmias."
+    explanation: "A common sign of ADH1 is low serum calcium, which results in symptoms including numbness, fatigue, and muscle cramps and spasms (tetany). In more severe cases, seizures, laryngospasms, and arrhythmias can occur."
+  },
+  "Average Time to Diagnosis": {
+    question: "True or False: ADH1 is typically diagnosed soon after birth.",
+    answers: [
+      { text: "True", correct: false },
+      { text: "False", correct: true }
+    ],
+    explanation: "While some cases are diagnosed in the first year of life, most cases take years and even decades to be diagnosed. There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."
   },
   "Confirming Diagnosis": {
     question: "How is a diagnosis of ADH1 definitively confirmed?",
@@ -62,15 +63,15 @@ const quizDataMap: Record<string, QuizData> = {
       { text: "Parathyroid hormone (PTH) test and 24-hour urine test", correct: false },
       { text: "Genetic testing", correct: true }
     ],
-    explanation: "Genetic testing of the calcium-sensing receptor gene (CASR) is the only way to confirm a diagnosis of ADH1."
+    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene (CASR) that causes ADH1."
   },
   "Limitations of Conventional Therapy": {
-    question: "True or False: Conventional therapy for hypoparathyroidism (calcium supplements and activated Vitamin D) also effectively treats ADH1.",
+    question: "True or False: Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.",
     answers: [
       { text: "True", correct: false },
       { text: "False", correct: true }
     ],
-    explanation: "Conventional therapy does not address the continued dysfunction in the kidneys. Without addressing the underlying issue, conventional therapy may exacerbate hypercalciuria and lead to long-term renal complications, such as kidney stones, kidney calcification, and kidney failure. Serum calcium may not be controlled either."
+    explanation: "Conventional therapy effectively regulates calcium but does not address the continued CaSR dysfunction in the kidneys, which may lead to increased urine calcium excretion."
   }
 };
 
@@ -104,7 +105,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-center px-8 pt-36 pb-10"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-start px-8 pt-44 pb-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -173,7 +174,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                     transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
                     onClick={() => handleAnswerSelect(answer)}
                     disabled={!!selectedAnswer}
-                    className={`relative bg-[#252528] border rounded-lg px-12 py-8
+                    className={`relative bg-[#252528] border rounded-lg pl-12 pr-20 py-8
                                text-white text-2xl font-light tracking-wide text-left
                                transition-all duration-500 overflow-hidden
                                ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
@@ -198,7 +199,23 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                         className="absolute inset-0 bg-gradient-to-r from-[#d64545]/20 via-[#d64545]/10 to-transparent"
                       />
                     )}
-                    <span className="relative z-10">{answer.text}</span>
+                    {isSelected && isCorrect && (
+                      <Check className="absolute right-6 top-1/2 -translate-y-1/2 z-10 w-9 h-9 text-[#FFC358]" strokeWidth={3} />
+                    )}
+                    {isSelected && !isCorrect && (
+                      <X className="absolute right-6 top-1/2 -translate-y-1/2 z-10 w-9 h-9 text-[#d64545]" strokeWidth={3} />
+                    )}
+                    <span className="relative z-10 flex items-start gap-4">
+                      {answers.length > 2 && (
+                        <span className={`text-2xl font-bold w-8 shrink-0 leading-[1.4]
+                          ${isSelected && isCorrect ? 'text-[#FFC358]' : ''}
+                          ${isSelected && !isCorrect ? 'text-[#d64545]' : ''}
+                          ${!isSelected ? 'text-gray-400' : ''}`}>
+                          {['A', 'B', 'C'][index]}.
+                        </span>
+                      )}
+                      <span className="flex-1">{answer.text}</span>
+                    </span>
                   </motion.button>
                 );
               })}
