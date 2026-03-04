@@ -24,7 +24,7 @@ function renderMarkup(text: string) {
   const parts = text.split(/(\[SUP\][^\[]*\[\/SUP\]|\[I\][^\[]*\[\/I\]|\[BR\])/);
   return parts.map((part, i) => {
     if (part.startsWith('[SUP]')) return <sup key={i} className="text-[0.65em]">{part.slice(5, -6)}</sup>;
-    if (part.startsWith('[I]')) return <em key={i}>{part.slice(3, -4)}</em>;
+    if (part.startsWith('[I]')) return <em key={i} style={{ marginRight: '0.15em' }}>{part.slice(3, -4)}</em>;
     if (part === '[BR]') return <br key={i} />;
     return part || null;
   });
@@ -51,7 +51,7 @@ const quizDataMap: Record<string, QuizData> = {
       { text: "ADH1 is caused by an injury to the parathyroid glands.", correct: false },
       {
         text: "ADH1 is caused by the body misreading calcium levels due to a variant of the CASR gene.",
-        display: "ADH1 is caused by the body misreading calcium levels due to a variant of the [I]CASR[/I] gene.[SUP]3[/SUP]",
+        display: "ADH1 is caused by the body misreading calcium levels due to a variant of the [I]CASR[/I]\u00A0gene.[SUP]3[/SUP]",
         correct: true,
       },
     ],
@@ -136,7 +136,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-start px-8 pt-44 pb-10"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-start px-8 pt-60 pb-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -205,7 +205,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                     transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
                     onClick={() => handleAnswerSelect(answer)}
                     disabled={!!selectedAnswer}
-                    className={`relative bg-[#252528] border rounded-lg pl-12 pr-20 py-8
+                    className={`relative bg-[#252528] border rounded-lg pl-7 pr-20 py-8
                                text-white text-2xl font-light text-left
                                transition-all duration-500 overflow-hidden
                                ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
@@ -236,7 +236,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                     {isSelected && !isCorrect && (
                       <X className="absolute right-6 top-1/2 -translate-y-1/2 z-10 w-9 h-9 text-[#d64545]" strokeWidth={3} />
                     )}
-                    <span className="relative z-10 flex items-start gap-4">
+                    <span className="relative z-10 flex items-start gap-2">
                       {answers.length > 2 && (
                         <span className={`text-2xl font-bold w-8 shrink-0 leading-[1.4]
                           ${isSelected && isCorrect ? 'text-[#FFC358]' : ''}

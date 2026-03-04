@@ -206,15 +206,16 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
+              className="-mt-[260px]"
             >
-              {/* Score reminder — same size as reveal screen */}
+              {/* Score reminder — same position and copy as reveal screen */}
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="mb-5"
               >
-                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score</p>
+                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
                 <p className="text-9xl font-bold text-[#FFC358] leading-none">{score}</p>
               </motion.div>
 
