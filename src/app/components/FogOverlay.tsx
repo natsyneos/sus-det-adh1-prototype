@@ -14,7 +14,7 @@ export interface FogConfig {
 
 export const DEFAULT_FOG_CONFIG: FogConfig = {
   speed:        0.028,
-  maxAlpha:     0.80,
+  maxAlpha:     0.78,
   touchRadius:  0.14,
   touchDecay:   1.4,
   fogScale:     0.7,
