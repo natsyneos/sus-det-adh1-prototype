@@ -18,7 +18,7 @@ export const DEFAULT_FOG_CONFIG: FogConfig = {
   touchRadius:  0.14,
   touchDecay:   1.4,
   fogScale:     1.0,
-  warpStrength: 1.8,
+  warpStrength: 1.4,
   fogLo:        0.22,
   fogHi:        0.72,
 };
