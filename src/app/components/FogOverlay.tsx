@@ -14,10 +14,10 @@ export interface FogConfig {
 
 export const DEFAULT_FOG_CONFIG: FogConfig = {
   speed:        0.028,
-  maxAlpha:     0.70,
+  maxAlpha:     0.80,
   touchRadius:  0.14,
   touchDecay:   1.4,
-  fogScale:     1.0,
+  fogScale:     0.7,
   warpStrength: 1.4,
   fogLo:        0.22,
   fogHi:        0.72,
@@ -299,7 +299,8 @@ export function FogOverlay({ density, scale, config = DEFAULT_FOG_CONFIG }: FogO
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     // ── Pointer state ────────────────────────────────────────────────────────
-    const start = performance.now();
+    // Offset the start time so the fog begins mid-cycle and is fully visible immediately
+    const start = performance.now() - 20000;
     let currentDensity = densityRef.current;
     let touchNorm = [0.5, -2.0]; // off-screen initially
 
@@ -420,7 +421,7 @@ export function FogOverlay({ density, scale, config = DEFAULT_FOG_CONFIG }: FogO
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 z-[50] pointer-events-none"
+      className="absolute inset-0 z-[1] pointer-events-none"
       style={{ width: '100%', height: '100%' }}
     />
   );
