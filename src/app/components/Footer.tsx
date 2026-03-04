@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import Layer1 from '../../imports/Layer1';
+
+function renderMarkup(text: string) {
+  const parts = text.split(/(\[I\][^\[]*\[\/I\])/);
+  return parts.map((part, i) => {
+    if (part.startsWith('[I]')) return <em key={i}>{part.slice(3, -4)}</em>;
+    return part || null;
+  });
+}
 
 const references = [
-  "Carmichael J, et al. Autosomal Dominant Hypocalcemia: A Systematic Review. J Bone Miner Res. 2020.",
-  "Hannan FM, et al. Calcium-sensing receptor (CaSR) mutations and disorders of calcium homeostasis. Best Pract Res Clin Endocrinol Metab. 2013.",
-  "Thakker RV. Diseases associated with the extracellular calcium-sensing receptor. Cell Calcium. 2004.",
-  "Pallais JC, et al. Autosomal Dominant Hypocalcemia. In: GeneReviews. University of Washington, Seattle. 2004.",
-  "Bilezikian JP, et al. Hypoparathyroidism in the adult: epidemiology, diagnosis, pathophysiology, target-organ involvement, treatment, and challenges for future research. J Bone Miner Res. 2011.",
-  "Shoback DM, et al. Calcimimetic agents in autosomal dominant hypocalcemia. N Engl J Med. 2004.",
-  "Roszko KL, et al. Autosomal Dominant Hypocalcemia Type 1: A Systematic Review. J Bone Miner Res. 2022.",
+  "Mannstadt M, Mathew A, Sridhar A, Stapleton Smith L, Roberts MS, Adler S. Next-generation sequencing for detection of underlying genetic causes of nonsurgical hypoparathyroidism: preliminary results from a sponsored testing program. [I]J Endocr Soc.[/I] 2023;7(Suppl 1):A284. doi:10.1210/jendso/bvad114.527",
+  "Roszko KL, Stapleton Smith LM, Sridhar AV, et al. Autosomal dominant hypocalcemia type 1: a systematic review. [I]J Bone Miner Res[/I]. 2022;37(10):1926-1935. doi:10.1002/jbmr.4659",
+  "De Coster T, David K, Breckpot J, Decallonne B. Management of autosomal dominant hypocalcemia type 1: literature review and clinical practice recommendations. [I]J Endocrinol Invest.[/I] 2025;48:831-844. doi:10.1007/s40618-024-02496-y",
+  "Khan S, Khan AA. Hypoparathyroidism: diagnosis, management and emerging therapies. [I]Nat Rev Endocrinol[/I]. 2025;21(6):360-374. doi:10.1038/s41574-024-01075-8",
 ];
 
 interface FooterProps {
@@ -22,15 +26,10 @@ export function Footer({ onExit }: FooterProps) {
   return (
     <>
       <div className="absolute bottom-0 left-0 right-0 z-40 px-8 py-5 flex items-center justify-between">
-        {/* Left side: logo + legal */}
-        <div className="flex flex-col gap-1">
-          <div className="h-6 w-24">
-            <Layer1 />
-          </div>
-          <p className="text-xs font-light opacity-50 text-white tracking-wide">
-            ©2026 BridgeBio Pharma, Inc. All rights reserved.<br />MAT-US-ECLTX-XXXX
-          </p>
-        </div>
+        {/* Left side: legal */}
+        <p className="text-xs font-light opacity-50 text-white tracking-wide">
+          ©2026 BridgeBio Pharma, Inc. All rights reserved.<br />MAT-US-ECLTX-0125
+        </p>
 
         {/* Right side: References + optional Exit */}
         <div className="flex items-center gap-3">
@@ -66,7 +65,7 @@ export function Footer({ onExit }: FooterProps) {
             <ol className="list-decimal list-inside space-y-4">
               {references.map((ref, index) => (
                 <li key={index} className="text-lg font-light text-gray-300 leading-relaxed">
-                  {ref}
+                  {renderMarkup(ref)}
                 </li>
               ))}
             </ol>

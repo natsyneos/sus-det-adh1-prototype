@@ -16,63 +16,89 @@ interface QuizScreenProps {
 
 interface QuizData {
   question: string;
-  answers: Array<{ text: string; correct: boolean }>;
+  answers: Array<{ text: string; display?: string; correct: boolean }>;
   explanation: string;
+}
+
+function renderMarkup(text: string) {
+  const parts = text.split(/(\[SUP\][^\[]*\[\/SUP\]|\[I\][^\[]*\[\/I\]|\[BR\])/);
+  return parts.map((part, i) => {
+    if (part.startsWith('[SUP]')) return <sup key={i} className="text-[0.65em]">{part.slice(5, -6)}</sup>;
+    if (part.startsWith('[I]')) return <em key={i}>{part.slice(3, -4)}</em>;
+    if (part === '[BR]') return <br key={i} />;
+    return part || null;
+  });
 }
 
 const quizDataMap: Record<string, QuizData> = {
   "What Is ADH1?": {
-    question: "What is autosomal dominant hypocalcemia type 1 (ADH1)?",
+    question: "What is autosomal dominant[BR]hypocalcemia type 1 (ADH1)?",
     answers: [
-      { text: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene (CASR).", correct: true },
-      { text: "A hypocalcemic disorder caused by magnesium deficiency leading to impaired PTH secretion.", correct: false },
-      { text: "An autoimmune form of hypoparathyroidism.", correct: false }
+      {
+        text: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene (CASR).",
+        display: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene [I](CASR)[/I].[SUP]1[/SUP]",
+        correct: true,
+      },
+      { text: "A hypocalcemic disorder caused by magnesium deficiency leading to impaired parathyroid hormone (PTH) secretion.", correct: false },
+      { text: "An autoimmune form of hypoparathyroidism.", correct: false },
     ],
-    explanation: "In ADH1, overly-sensitive calcium-sensing receptors dysregulate calcium homeostasis."
+    explanation: "In ADH1, overly-sensitive calcium-sensing receptors dysregulate calcium homeostasis.[SUP]2[/SUP]",
   },
   "Mechanism of Disease": {
     question: "How is the mechanism of disease in ADH1 distinct from other forms of hypoparathyroidism?",
     answers: [
       { text: "ADH1 is solely a kidney-related condition.", correct: false },
       { text: "ADH1 is caused by an injury to the parathyroid glands.", correct: false },
-      { text: "ADH1 is caused by the body misreading calcium levels due to a variant of the CASR gene.", correct: true }
+      {
+        text: "ADH1 is caused by the body misreading calcium levels due to a variant of the CASR gene.",
+        display: "ADH1 is caused by the body misreading calcium levels due to a variant of the [I]CASR[/I] gene.[SUP]3[/SUP]",
+        correct: true,
+      },
     ],
-    explanation: "In ADH1, the calcium-sensing receptors are too sensitive, \"tricking\" the body into believing low levels of calcium in the blood are normal or high. As a result, the parathyroid glands don't produce enough parathyroid hormone, and the kidneys excrete too much calcium into the urine."
+    explanation: "In ADH1, the calcium-sensing receptors are too sensitive, \"tricking\" the body into believing low levels of calcium in the blood are normal or high. As a result, the parathyroid glands don't produce enough parathyroid hormone, and the kidneys excrete too much calcium into the urine.[SUP]3[/SUP]",
   },
   "Clinical Presentation": {
     question: "What are the most common physical symptoms of ADH1?",
     answers: [
-      { text: "Numbness, fatigue, tetany", correct: true },
+      {
+        text: "Paresthesia, fatigue, tetany",
+        display: "Paresthesia, fatigue, tetany[SUP]2[/SUP]",
+        correct: true,
+      },
       { text: "Restless legs, anxiety, and dry skin", correct: false },
-      { text: "Paresthesia, insomnia, and sensitivity to heat", correct: false }
+      { text: "Numbness, insomnia, and sensitivity to heat", correct: false },
     ],
-    explanation: "A common sign of ADH1 is low serum calcium, which results in symptoms including numbness, fatigue, and muscle cramps and spasms (tetany). In more severe cases, seizures, laryngospasms, and arrhythmias can occur."
+    explanation: "A common sign of ADH1 is low serum calcium, which results in symptoms including paresthesia or numbness, fatigue, muscle cramps and spasms, and tetany (severe muscle cramps). In more severe cases, seizures, laryngospasms, and arrhythmias can occur.[SUP]2,4[/SUP]",
   },
   "Average Time to Diagnosis": {
-    question: "True or False: ADH1 is typically diagnosed soon after birth.",
+    question: "True or False:[BR]ADH1 is typically diagnosed soon after birth.",
     answers: [
       { text: "True", correct: false },
-      { text: "False", correct: true }
+      { text: "False", correct: true },
     ],
-    explanation: "While some cases are diagnosed in the first year of life, most cases take years and even decades to be diagnosed. There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."
+    explanation: "While some cases are diagnosed in the first year of life, most cases take years and even decades to be diagnosed. There is a 20-plus-year gap between median age of diagnosis for a hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years).[SUP]2[/SUP]",
   },
   "Confirming Diagnosis": {
     question: "How is a diagnosis of ADH1 definitively confirmed?",
     answers: [
       { text: "Kidney ultrasound showing nephrocalcinosis", correct: false },
       { text: "Parathyroid hormone (PTH) test and 24-hour urine test", correct: false },
-      { text: "Genetic testing", correct: true }
+      {
+        text: "Genetic testing",
+        display: "Genetic testing[SUP]1[/SUP]",
+        correct: true,
+      },
     ],
-    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene (CASR) that causes ADH1."
+    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene [I](CASR)[/I] that causes ADH1.[SUP]1[/SUP]",
   },
   "Limitations of Conventional Therapy": {
-    question: "True or False: Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.",
+    question: "True or False:[BR]Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.[SUP]2[/SUP]",
     answers: [
       { text: "True", correct: false },
-      { text: "False", correct: true }
+      { text: "False", correct: true },
     ],
-    explanation: "Conventional therapy effectively regulates calcium but does not address the continued CaSR dysfunction in the kidneys, which may lead to increased urine calcium excretion."
-  }
+    explanation: "Conventional therapy effectively regulates calcium but does not address the continued CaSR dysfunction in the kidneys, which may lead to increased urine calcium excretion.[SUP]2[/SUP]",
+  },
 };
 
 export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore, onAnswerResult, onNext, onBackToStart }: QuizScreenProps) {
@@ -98,6 +124,11 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
   const progressBefore = ((questionNumber - 1) / totalQuestions) * 100;
   const progressAfter = (questionNumber / totalQuestions) * 100;
   const isLastQuestion = questionNumber === totalQuestions;
+
+  const correctIdx = answers.findIndex(a => a.correct);
+  const correctLabel = answers.length > 2
+    ? ['A', 'B', 'C'][correctIdx]
+    : answers[correctIdx]?.text;
 
   return (
     <motion.div
@@ -154,9 +185,9 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="text-4xl font-light tracking-wide text-white mb-16 text-center leading-[1.25]"
+              className="text-3xl font-light text-white mb-16 text-center leading-[1.25]"
             >
-              {quizData ? quizData.question : "What is the average diagnostic time for patients living with ADH1?"}
+              {quizData ? renderMarkup(quizData.question) : "What is the average diagnostic time for patients living with ADH1?"}
             </motion.h2>
 
             {/* Answer options */}
@@ -175,7 +206,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                     onClick={() => handleAnswerSelect(answer)}
                     disabled={!!selectedAnswer}
                     className={`relative bg-[#252528] border rounded-lg pl-12 pr-20 py-8
-                               text-white text-2xl font-light tracking-wide text-left
+                               text-white text-2xl font-light text-left
                                transition-all duration-500 overflow-hidden
                                ${!selectedAnswer ? 'hover:bg-[#2a2a2e] cursor-pointer' : 'cursor-default'}
                                ${isSelected && isCorrect ? 'border-[#FFC358]' : ''}
@@ -214,7 +245,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                           {['A', 'B', 'C'][index]}.
                         </span>
                       )}
-                      <span className="flex-1">{answer.text}</span>
+                      <span className="flex-1">{renderMarkup(answer.display || answer.text)}</span>
                     </span>
                   </motion.button>
                 );
@@ -231,8 +262,11 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                   transition={{ duration: 0.6 }}
                   className="text-center"
                 >
+                  <p className="text-xl font-light text-white mb-3 text-left">
+                    The correct answer is: {correctLabel}
+                  </p>
                   <p className="text-2xl font-bold text-[#FFC358] leading-[1.25] mb-12 text-left">
-                    {quizData ? quizData.explanation : "There is a 20-plus-year gap between median age of diagnosis for hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."}
+                    {quizData ? renderMarkup(quizData.explanation) : "There is a 20-plus-year gap between median age of diagnosis for a hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years)."}
                   </p>
                   <div className="flex items-center justify-center gap-6 mt-8">
                     <motion.button
