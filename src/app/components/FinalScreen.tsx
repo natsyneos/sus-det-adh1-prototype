@@ -63,6 +63,7 @@ function loadLeaderboard(): LeaderboardEntry[] {
 export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: FinalScreenProps) {
   const totalScore = score + timeBonus;
   const [phase, setPhase] = useState<Phase>('reveal');
+  const [isLeaderboardLayout, setIsLeaderboardLayout] = useState(false);
   const [chars, setChars] = useState(['', '', '']);
   const [focusedIdx, setFocusedIdx] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -134,7 +135,7 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       className={`absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center px-8
-                  ${phase === 'leaderboard' ? 'justify-start pt-16 pb-10' : 'justify-center py-10'}`}
+                  ${isLeaderboardLayout ? 'justify-start pt-16 pb-10' : 'justify-center py-10'}`}
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -144,7 +145,7 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
 
 
       <div className="relative z-10 max-w-4xl w-full text-center">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" onExitComplete={() => { if (phase === 'leaderboard') setIsLeaderboardLayout(true); }}>
 
           {/* ── Phase 1: Score reveal ── */}
           {phase === 'reveal' && (
