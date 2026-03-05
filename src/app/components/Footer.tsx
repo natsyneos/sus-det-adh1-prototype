@@ -10,10 +10,10 @@ function renderMarkup(text: string) {
 }
 
 const references = [
-  "Mannstadt M, Mathew A, Sridhar A, Stapleton Smith L, Roberts MS, Adler S. Next-generation sequencing for detection of underlying genetic causes of nonsurgical hypoparathyroidism: preliminary results from a sponsored testing program. [I]J Endocr Soc.[/I] 2023;7(Suppl 1):A284. doi:10.1210/jendso/bvad114.527",
-  "Roszko KL, Stapleton Smith LM, Sridhar AV, et al. Autosomal dominant hypocalcemia type 1: a systematic review. [I]J Bone Miner Res[/I]. 2022;37(10):1926-1935. doi:10.1002/jbmr.4659",
-  "De Coster T, David K, Breckpot J, Decallonne B. Management of autosomal dominant hypocalcemia type 1: literature review and clinical practice recommendations. [I]J Endocrinol Invest.[/I] 2025;48:831-844. doi:10.1007/s40618-024-02496-y",
-  "Khan S, Khan AA. Hypoparathyroidism: diagnosis, management and emerging therapies. [I]Nat Rev Endocrinol[/I]. 2025;21(6):360-374. doi:10.1038/s41574-024-01075-8",
+  "Mannstadt M, Mathew A, Sridhar A, Stapleton Smith L, Roberts MS, Adler S. SAT231 next-generation sequencing for detection of underlying genetic causes of nonsurgical hypoparathyroidism: preliminary results from a sponsored testing program. [I]J Endocr Soc.[/I] 2023;7(Suppl 1):A284. doi:10.1210/jendso/bvad114.527",
+  "Roszko KL, Stapleton Smith LM, Sridhar AV, et al. Autosomal dominant hypocalcemia type 1: a systematic review. [I]J Bone Miner Res[/I]. 2022;37(10):1926–1935. doi:10.1002/jbmr.4659",
+  "De Coster T, David K, Breckpot J, Decallonne B. Management of autosomal dominant hypocalcemia type 1: literature review and clinical practice recommendations. [I]J Endocrinol Invest.[/I] 2025;48:831–844. doi:10.1007/s40618-024-02496-y",
+  "Khan S, Khan AA. Hypoparathyroidism: diagnosis, management and emerging therapies. [I]Nat Rev Endocrinol[/I]. 2025;21(6):360–374. doi:10.1038/s41574-024-01075-8",
 ];
 
 interface FooterProps {
@@ -28,7 +28,7 @@ export function Footer({ onExit }: FooterProps) {
       <div className="absolute bottom-0 left-0 right-0 z-40 px-8 py-5 flex items-center justify-between">
         {/* Left side: legal */}
         <p className="text-xs font-light opacity-50 text-white tracking-wide">
-          ©2026 BridgeBio Pharma, Inc. All rights reserved.<br />MAT-US-ECLTX-0125
+          © 2026 BridgeBio Pharma, Inc. All rights reserved.<br />MAT-US-ECLTX-0125
         </p>
 
         {/* Right side: References + optional Exit */}

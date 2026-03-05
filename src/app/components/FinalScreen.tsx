@@ -69,18 +69,14 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
   const [playerIndex, setPlayerIndex] = useState(-1);
 
   // Compute peer percentile against real (non-seeded) players only.
-  // Returns "Congratulations! You scored in the top X% of your peers." if top 50% or better,
-  // otherwise null (show encouragement fallback).
-  const peerMessage = (() => {
+  // Returns top % if top 50% or better, otherwise null (show encouragement fallback).
+  const peerTopPct = (() => {
     const board = loadLeaderboard();
     const realPlayers = board.filter(e => !SEED_INITIALS.has(e.initials));
     if (realPlayers.length === 0) return null;
     const playersBelow = realPlayers.filter(e => e.score < totalScore).length;
     const betterThanPct = Math.floor((playersBelow / realPlayers.length) * 100);
-    if (betterThanPct >= 50) {
-      const topPct = Math.max(1, 100 - betterThanPct);
-      return `Congratulations! You scored in the top ${topPct}% of your peers.`;
-    }
+    if (betterThanPct >= 50) return Math.max(1, 100 - betterThanPct);
     return null;
   })();
 
@@ -168,7 +164,9 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
                 className="mb-[80px]"
               >
                 <p className="text-3xl font-light text-white leading-[1.35]">
-                  {peerMessage ?? "Awareness is the first step. You're already moving toward deeper knowledge of ADH1."}
+                  {peerTopPct !== null
+                    ? <>Congratulations!<br />You scored in the top {peerTopPct}% of your peers.</>
+                    : "Awareness is the first step. You're already moving toward deeper knowledge of ADH1."}
                 </p>
               </motion.div>
 
@@ -182,8 +180,9 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
                 <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
                 <p className="text-9xl font-bold text-[#FFC358] leading-none">{totalScore}</p>
                 <p className="text-2xl font-light text-[#FFC358] mt-5 mb-4 max-w-[520px] mx-auto leading-snug text-balance">
-                  You received +{timeBonus} bonus points for completing this quiz in{' '}
-                  <span className="font-bold">{formatExactTime(quizDurationSec)}</span>
+                  {timeBonus > 0
+                    ? <>You received +{timeBonus} bonus points for completing this quiz in{' '}<span className="font-bold">{formatExactTime(quizDurationSec)}</span></>
+                    : <>You completed this quiz in{' '}<span className="font-bold">{formatExactTime(quizDurationSec)}</span></>}
                 </p>
               </motion.div>
 

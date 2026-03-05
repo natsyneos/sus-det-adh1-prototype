@@ -45,7 +45,7 @@ const quizDataMap: Record<string, QuizData> = {
     explanation: "In ADH1, overly-sensitive calcium-sensing receptors dysregulate calcium homeostasis.[SUP]2[/SUP]",
   },
   "Mechanism of Disease": {
-    question: "How is the mechanism of disease in ADH1 distinct from other forms of hypoparathyroidism?",
+    question: "How is the mechanism of disease[BR]in ADH1 distinct from other forms[BR]of hypoparathyroidism?",
     answers: [
       { text: "ADH1 is solely a kidney-related condition.", correct: false },
       { text: "ADH1 is caused by an injury to the parathyroid glands.", correct: false },
@@ -58,7 +58,7 @@ const quizDataMap: Record<string, QuizData> = {
     explanation: "In ADH1, the calcium-sensing receptors are too sensitive, \"tricking\" the body into believing low levels of calcium in the blood are normal or high. As a result, the parathyroid glands don't produce enough parathyroid hormone, and the kidneys excrete too much calcium into the urine.[SUP]3[/SUP]",
   },
   "Clinical Presentation": {
-    question: "What are the most common physical symptoms of ADH1?",
+    question: "What are the most common[BR]physical symptoms of ADH1?",
     answers: [
       {
         text: "Paresthesia, fatigue, tetany",
@@ -79,7 +79,7 @@ const quizDataMap: Record<string, QuizData> = {
     explanation: "While some cases are diagnosed in the first year of life, most cases take years and even decades to be diagnosed. There is a 20-plus-year gap between median age of diagnosis for a hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years).[SUP]2[/SUP]",
   },
   "Confirming Diagnosis": {
-    question: "How is a diagnosis of ADH1 definitively confirmed?",
+    question: "How is a diagnosis of ADH1[BR]definitively confirmed?",
     answers: [
       { text: "Kidney ultrasound showing nephrocalcinosis", correct: false },
       { text: "Parathyroid hormone (PTH) test and 24-hour urine test", correct: false },

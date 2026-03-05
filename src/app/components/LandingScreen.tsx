@@ -87,9 +87,9 @@ export function LandingScreen({ onTopicSelect }: LandingScreenProps) {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-7xl font-light tracking-wide text-center leading-tight"
         >
-          <span className="text-white">Test your </span><span className="text-[#FFC358] font-bold">ADH1</span>
+          <span className="text-white">Test your</span>
           <br />
-          <span className="text-[#FFC358] font-bold">Knowledge</span>
+          <span className="text-[#FFC358] font-bold">ADH1 Knowledge</span>
         </motion.h1>
 
         {/* Subhead */}
