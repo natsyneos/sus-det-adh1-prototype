@@ -20,10 +20,10 @@ interface QuizData {
   explanation: string;
 }
 
-function renderMarkup(text: string) {
+function renderMarkup(text: string, showRefs = true) {
   const parts = text.split(/(\[SUP\][^\[]*\[\/SUP\]|\[I\][^\[]*\[\/I\]|\[BR\])/);
   return parts.map((part, i) => {
-    if (part.startsWith('[SUP]')) return <sup key={i} className="text-[0.65em]">{part.slice(5, -6)}</sup>;
+    if (part.startsWith('[SUP]')) return showRefs ? <sup key={i} className="text-[0.65em]">{part.slice(5, -6)}</sup> : null;
     if (part.startsWith('[I]')) return <em key={i} style={{ marginRight: '0.15em' }}>{part.slice(3, -4)}</em>;
     if (part === '[BR]') return <br key={i} />;
     return part || null;
@@ -36,7 +36,7 @@ const quizDataMap: Record<string, QuizData> = {
     answers: [
       {
         text: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene (CASR).",
-        display: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene [I](CASR)[/I].[SUP]1[/SUP]",
+        display: "A genetic form of hypoparathyroidism caused by gain-of-function variants in the calcium-sensing receptor gene ([I]CASR[/I]).[SUP]1[/SUP]",
         correct: true,
       },
       { text: "A hypocalcemic disorder caused by magnesium deficiency leading to impaired parathyroid hormone (PTH) secretion.", correct: false },
@@ -68,7 +68,7 @@ const quizDataMap: Record<string, QuizData> = {
       { text: "Restless legs, anxiety, and dry skin", correct: false },
       { text: "Numbness, insomnia, and sensitivity to heat", correct: false },
     ],
-    explanation: "A common sign of ADH1 is low serum calcium, which results in symptoms including paresthesia or numbness, fatigue, muscle cramps and spasms, and tetany (severe muscle cramps). In more severe cases, seizures, laryngospasms, and arrhythmias can occur.[SUP]2,4[/SUP]",
+    explanation: "A common sign of ADH1 is low serum calcium, which results in symptoms including paresthesia or numbness, fatigue, and muscle cramps and spasms (including tetany). In more severe cases, seizures, laryngospasms, and arrhythmias can occur.[SUP]2,4[/SUP]",
   },
   "Average Time to Diagnosis": {
     question: "True or False:[BR]ADH1 is typically diagnosed soon after birth.",
@@ -89,7 +89,7 @@ const quizDataMap: Record<string, QuizData> = {
         correct: true,
       },
     ],
-    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene [I](CASR)[/I] that causes ADH1.[SUP]1[/SUP]",
+    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene ([I]CASR[/I]) that causes ADH1.[SUP]1[/SUP]",
   },
   "Limitations of Conventional Therapy": {
     question: "True or False:[BR]Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.[SUP]2[/SUP]",
@@ -187,7 +187,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
               transition={{ delay: 0.1, duration: 0.5 }}
               className="text-3xl font-light text-white mb-16 text-center leading-[1.25]"
             >
-              {quizData ? renderMarkup(quizData.question) : "What is the average diagnostic time for patients living with ADH1?"}
+              {quizData ? renderMarkup(quizData.question, !!selectedAnswer) : "What is the average diagnostic time for patients living with ADH1?"}
             </motion.h2>
 
             {/* Answer options */}
@@ -245,7 +245,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
                           {['A', 'B', 'C'][index]}.
                         </span>
                       )}
-                      <span className="flex-1">{renderMarkup(answer.display || answer.text)}</span>
+                      <span className="flex-1">{renderMarkup(answer.display || answer.text, !!selectedAnswer)}</span>
                     </span>
                   </motion.button>
                 );
