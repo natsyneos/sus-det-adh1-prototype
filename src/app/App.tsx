@@ -31,6 +31,7 @@ export default function App() {
   const [scale, setScale] = useState(1);
   const [score, setScore] = useState(0);
   const [fogConfig, setFogConfig] = useState<FogConfig>(DEFAULT_FOG_CONFIG);
+  const [questionAnswered, setQuestionAnswered] = useState(false);
 
   useEffect(() => {
     const updateScale = () => {
@@ -45,6 +46,7 @@ export default function App() {
 
   const handleAnswerResult = (correct: boolean) => {
     if (correct) setScore(prev => prev + 100);
+    setQuestionAnswered(true);
   };
 
   const handleTopicSelect = (topic: string) => {
@@ -55,6 +57,7 @@ export default function App() {
   };
 
   const handleNextQuestion = () => {
+    setQuestionAnswered(false);
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < topics.length) {
       // Question-to-question: no flash, content transitions internally
@@ -72,6 +75,7 @@ export default function App() {
     setCurrentScreen('landing');
     setSelectedTopic('');
     setCurrentQuestionIndex(0);
+    setQuestionAnswered(false);
     setScore(0);
   };
 
@@ -80,19 +84,22 @@ export default function App() {
     setCurrentScreen('landing');
     setSelectedTopic('');
     setCurrentQuestionIndex(0);
+    setQuestionAnswered(false);
     setScore(0);
   };
 
   // Fog density:
-  //   landing      → 1.0 (maximum)
-  //   quiz q1      → 1.0, linear ramp down to 0.35 at q6
-  //   final screen → 0.0 (fully clear — full reveal)
+  //   landing         → 1.0 (maximum)
+  //   quiz unanswered → ramp based on question index
+  //   quiz answered   → immediately step to next level (fog clears on answer, not on Next)
+  //   final screen    → 0.0 (fully clear — full reveal)
   const MIN_QUIZ_DENSITY = 0.35;
   const fogDensity = (() => {
     if (currentScreen === 'final')   return 0;
     if (currentScreen === 'landing') return 1;
-    // Linear interpolation: index 0 → 1.0, index (n-1) → MIN_QUIZ_DENSITY
-    return 1.0 - currentQuestionIndex * (1.0 - MIN_QUIZ_DENSITY) / (topics.length - 1);
+    // Advance one step as soon as the question is answered
+    const effectiveIndex = currentQuestionIndex + (questionAnswered ? 1 : 0);
+    return 1.0 - effectiveIndex * (1.0 - MIN_QUIZ_DENSITY) / (topics.length - 1);
   })();
 
   return (
