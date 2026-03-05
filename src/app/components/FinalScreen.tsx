@@ -7,6 +7,17 @@ import { Footer } from './Footer';
 interface FinalScreenProps {
   onRestart: () => void;
   score: number;
+  timeBonus: number;
+  quizDurationSec: number;
+}
+
+function formatExactTime(sec: number): string {
+  if (sec < 60) return 'under 1 minute';
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  const minPart = `${m} ${m === 1 ? 'minute' : 'minutes'}`;
+  if (s === 0) return minPart;
+  return `${minPart} and ${s} ${s === 1 ? 'second' : 'seconds'}`;
 }
 
 interface LeaderboardEntry {
@@ -49,7 +60,8 @@ function loadLeaderboard(): LeaderboardEntry[] {
   return [...SEED_ENTRIES];
 }
 
-export function FinalScreen({ onRestart, score }: FinalScreenProps) {
+export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: FinalScreenProps) {
+  const totalScore = score + timeBonus;
   const [phase, setPhase] = useState<Phase>('reveal');
   const [chars, setChars] = useState(['', '', '']);
   const [focusedIdx, setFocusedIdx] = useState(0);
@@ -63,7 +75,7 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
     const board = loadLeaderboard();
     const realPlayers = board.filter(e => !SEED_INITIALS.has(e.initials));
     if (realPlayers.length === 0) return null;
-    const playersBelow = realPlayers.filter(e => e.score < score).length;
+    const playersBelow = realPlayers.filter(e => e.score < totalScore).length;
     const betterThanPct = Math.floor((playersBelow / realPlayers.length) * 100);
     if (betterThanPct >= 50) {
       const topPct = Math.max(1, 100 - betterThanPct);
@@ -107,7 +119,7 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
 
   const handleSubmit = () => {
     if (!chars.some(c => c)) return;
-    const entry: LeaderboardEntry = { initials: chars.map(c => c || '_').join(''), score };
+    const entry: LeaderboardEntry = { initials: chars.map(c => c || '_').join(''), score: totalScore };
     const board = loadLeaderboard();
     board.push(entry);
     board.sort((a, b) => b.score - a.score);
@@ -126,7 +138,7 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       className={`absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center px-8
-                  ${phase === 'leaderboard' ? 'justify-start pt-[56px] pb-10' : 'justify-center py-10'}`}
+                  ${phase === 'leaderboard' ? 'justify-start pt-16 pb-10' : 'justify-center py-10'}`}
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">
@@ -148,27 +160,30 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
               transition={{ duration: 0.4 }}
               className="-mt-[260px]"
             >
-              {/* Score — first */}
+              {/* Peer message — above score */}
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="mb-10"
-              >
-                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
-                <p className="text-9xl font-bold text-[#FFC358] leading-none">{score}</p>
-                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mt-2">out of 600</p>
-              </motion.div>
-
-              {/* Peer message — below score */}
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
                 className="mb-[80px]"
               >
                 <p className="text-3xl font-light text-white leading-[1.35]">
                   {peerMessage ?? "Awareness is the first step. You're already moving toward deeper knowledge of ADH1."}
+                </p>
+              </motion.div>
+
+              {/* Score — below message */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="mb-10"
+              >
+                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
+                <p className="text-9xl font-bold text-[#FFC358] leading-none">{totalScore}</p>
+                <p className="text-2xl font-light text-[#FFC358] mt-5 mb-4 max-w-[520px] mx-auto leading-snug text-balance">
+                  You received +{timeBonus} bonus points for completing this quiz in{' '}
+                  <span className="font-bold">{formatExactTime(quizDurationSec)}</span>
                 </p>
               </motion.div>
 
@@ -213,10 +228,10 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
-                className="mb-5"
+                className="mb-12"
               >
                 <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
-                <p className="text-9xl font-bold text-[#FFC358] leading-none">{score}</p>
+                <p className="text-9xl font-bold text-[#FFC358] leading-none">{totalScore}</p>
               </motion.div>
 
               <motion.div
@@ -291,20 +306,6 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
               >
-                {/* Back to Start */}
-                <button
-                  onClick={onRestart}
-                  className="group relative bg-[#252528] border border-[#5a5a5e] rounded-lg px-14 py-6
-                             text-white hover:border-[#7a7a7e] transition-all duration-400
-                             hover:bg-[#2a2a2e] overflow-hidden mb-16"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#4a4a4e]/20 to-transparent
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
-                  <span className="relative z-10 flex items-center gap-3 text-xl font-light tracking-wide">
-                    <X className="w-5 h-5" />Back to Start
-                  </span>
-                </button>
-
                 {/* Trophy inline with heading */}
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <Trophy className="w-10 h-10 text-[#FFC358] shrink-0" />
@@ -351,6 +352,20 @@ export function FinalScreen({ onRestart, score }: FinalScreenProps) {
                 <p className="text-2xl text-white mb-8">
                   <span className="font-light">Learn more at </span><span className="font-bold">ADH1.com</span>
                 </p>
+
+                {/* Back to Start */}
+                <button
+                  onClick={onRestart}
+                  className="group relative bg-[#252528] border border-[#5a5a5e] rounded-lg px-10 py-4
+                             text-white hover:border-[#7a7a7e] transition-all duration-400
+                             hover:bg-[#2a2a2e] overflow-hidden mt-10"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#4a4a4e]/20 to-transparent
+                                  opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
+                  <span className="relative z-10 flex items-center gap-3 text-lg font-light tracking-wide">
+                    <X className="w-4 h-4" />Back to Start
+                  </span>
+                </button>
               </motion.div>
             </motion.div>
           )}

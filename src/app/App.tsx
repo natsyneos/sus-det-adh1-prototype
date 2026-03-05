@@ -32,6 +32,9 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [fogConfig, setFogConfig] = useState<FogConfig>(DEFAULT_FOG_CONFIG);
   const [questionAnswered, setQuestionAnswered] = useState(false);
+  const [quizStartTime, setQuizStartTime] = useState(0);
+  const [timeBonus, setTimeBonus] = useState(0);
+  const [quizDurationSec, setQuizDurationSec] = useState(0);
 
   useEffect(() => {
     const updateScale = () => {
@@ -47,12 +50,24 @@ export default function App() {
   const handleAnswerResult = (correct: boolean) => {
     if (correct) setScore(prev => prev + 100);
     setQuestionAnswered(true);
+    if (currentQuestionIndex === topics.length - 1) {
+      const durationSec = Math.round((Date.now() - quizStartTime) / 1000);
+      setQuizDurationSec(durationSec);
+      setTimeBonus(
+        durationSec < 60  ? 100 :
+        durationSec < 120 ? 75  :
+        durationSec < 210 ? 50  :
+        durationSec < 300 ? 25  :
+        durationSec < 420 ? 10  : 0
+      );
+    }
   };
 
   const handleTopicSelect = (topic: string) => {
     setIsTransitioning(true);
     setSelectedTopic(topic);
     setCurrentQuestionIndex(0);
+    setQuizStartTime(Date.now());
     setCurrentScreen('quiz');
   };
 
@@ -77,6 +92,8 @@ export default function App() {
     setCurrentQuestionIndex(0);
     setQuestionAnswered(false);
     setScore(0);
+    setTimeBonus(0);
+    setQuizDurationSec(0);
   };
 
   const handleRestart = () => {
@@ -86,6 +103,8 @@ export default function App() {
     setCurrentQuestionIndex(0);
     setQuestionAnswered(false);
     setScore(0);
+    setTimeBonus(0);
+    setQuizDurationSec(0);
   };
 
   // Fog density:
@@ -140,7 +159,7 @@ export default function App() {
               />
             )}
             {currentScreen === 'final' && (
-              <FinalScreen key="final" onRestart={handleRestart} score={score} />
+              <FinalScreen key="final" onRestart={handleRestart} score={score} timeBonus={timeBonus} quizDurationSec={quizDurationSec} />
             )}
           </AnimatePresence>
 
