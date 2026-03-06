@@ -61,8 +61,8 @@ const quizDataMap: Record<string, QuizData> = {
     question: "What are the most common[BR]physical symptoms of ADH1?",
     answers: [
       {
-        text: "Paresthesia, fatigue, tetany",
-        display: "Paresthesia, fatigue, tetany[SUP]2[/SUP]",
+        text: "Paresthesia, fatigue, and tetany",
+        display: "Paresthesia, fatigue, and tetany[SUP]2[/SUP]",
         correct: true,
       },
       { text: "Restless legs, anxiety, and dry skin", correct: false },
@@ -82,14 +82,14 @@ const quizDataMap: Record<string, QuizData> = {
     question: "How is a diagnosis of ADH1[BR]definitively confirmed?",
     answers: [
       { text: "Kidney ultrasound showing nephrocalcinosis", correct: false },
-      { text: "Parathyroid hormone (PTH) test and 24-hour urine test", correct: false },
+      { text: "Parathyroid hormone (PTH) test and 24–hour urine test", correct: false },
       {
         text: "Genetic testing",
         display: "Genetic testing[SUP]1[/SUP]",
         correct: true,
       },
     ],
-    explanation: "Genetic testing is the only way to determine whether you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene ([I]CASR[/I]) that causes ADH1.[SUP]1[/SUP]",
+    explanation: "Genetic testing is the only way to determine whether[BR]you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene ([I]CASR[/I]) that causes ADH1.[SUP]1[/SUP]",
   },
   "Limitations of Conventional Therapy": {
     question: "True or False:[BR]Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.[SUP]2[/SUP]",
