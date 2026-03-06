@@ -7,17 +7,6 @@ import { Footer } from './Footer';
 interface FinalScreenProps {
   onRestart: () => void;
   score: number;
-  timeBonus: number;
-  quizDurationSec: number;
-}
-
-function formatExactTime(sec: number): string {
-  if (sec < 60) return 'under 1 minute';
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  const minPart = `${m} ${m === 1 ? 'minute' : 'minutes'}`;
-  if (s === 0) return minPart;
-  return `${minPart} and ${s} ${s === 1 ? 'second' : 'seconds'}`;
 }
 
 interface LeaderboardEntry {
@@ -60,8 +49,7 @@ function loadLeaderboard(): LeaderboardEntry[] {
   return [...SEED_ENTRIES];
 }
 
-export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: FinalScreenProps) {
-  const totalScore = score + timeBonus;
+export function FinalScreen({ onRestart, score }: FinalScreenProps) {
   const [phase, setPhase] = useState<Phase>('reveal');
   const [isLeaderboardLayout, setIsLeaderboardLayout] = useState(false);
   const [chars, setChars] = useState(['', '', '']);
@@ -75,7 +63,7 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
     const board = loadLeaderboard();
     const realPlayers = board.filter(e => !SEED_INITIALS.has(e.initials));
     if (realPlayers.length === 0) return null;
-    const playersBelow = realPlayers.filter(e => e.score < totalScore).length;
+    const playersBelow = realPlayers.filter(e => e.score < score).length;
     const betterThanPct = Math.floor((playersBelow / realPlayers.length) * 100);
     if (betterThanPct >= 50) return Math.max(1, 100 - betterThanPct);
     return null;
@@ -116,7 +104,7 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
 
   const handleSubmit = () => {
     if (!chars.some(c => c)) return;
-    const entry: LeaderboardEntry = { initials: chars.map(c => c || '_').join(''), score: totalScore };
+    const entry: LeaderboardEntry = { initials: chars.map(c => c || '_').join(''), score: score };
     const board = loadLeaderboard();
     board.push(entry);
     board.sort((a, b) => b.score - a.score);
@@ -179,12 +167,8 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
                 className="mb-10"
               >
                 <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
-                <p className="text-9xl font-bold text-[#FFC358] leading-none">{totalScore}</p>
-                <p className="text-2xl font-light text-[#FFC358] mt-5 mb-4 max-w-[520px] mx-auto leading-snug text-balance">
-                  {timeBonus > 0
-                    ? <>You received +{timeBonus} bonus points for completing this quiz in{' '}<span className="font-bold">{formatExactTime(quizDurationSec)}</span></>
-                    : <>You completed this quiz in{' '}<span className="font-bold">{formatExactTime(quizDurationSec)}</span></>}
-                </p>
+                <p className="text-9xl font-bold text-[#FFC358] leading-none">{score}</p>
+                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mt-2">Out of 600</p>
               </motion.div>
 
               {/* CTAs — third */}
@@ -231,7 +215,8 @@ export function FinalScreen({ onRestart, score, timeBonus, quizDurationSec }: Fi
                 className="mb-12"
               >
                 <p className="text-xl font-light text-gray-400 tracking-widest uppercase mb-1">Your Score Is</p>
-                <p className="text-9xl font-bold text-[#FFC358] leading-none">{totalScore}</p>
+                <p className="text-9xl font-bold text-[#FFC358] leading-none">{score}</p>
+                <p className="text-xl font-light text-gray-400 tracking-widest uppercase mt-2">Out of 600</p>
               </motion.div>
 
               <motion.div
