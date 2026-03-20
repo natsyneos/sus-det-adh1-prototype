@@ -50,8 +50,8 @@ const quizDataMap: Record<string, QuizData> = {
       { text: "ADH1 is solely a kidney-related condition.", correct: false },
       { text: "ADH1 is caused by an injury to the parathyroid glands.", correct: false },
       {
-        text: "ADH1 is caused by the body misreading calcium levels due to a variant of the CASR gene.",
-        display: "ADH1 is caused by the body misreading calcium levels due to a variant of the [I]CASR[/I]\u00A0gene.[SUP]3[/SUP]",
+        text: "ADH1 is caused by the body misreading calcium levels due to overly-sensitive calcium-sensing receptors.",
+        display: "ADH1 is caused by the body misreading calcium levels due to overly-sensitive calcium-sensing receptors.[SUP]3[/SUP]",
         correct: true,
       },
     ],
@@ -79,25 +79,25 @@ const quizDataMap: Record<string, QuizData> = {
     explanation: "While some cases are diagnosed in the first year of life, most cases take years and even decades to be diagnosed. There is a 20-plus-year gap between median age of diagnosis for a hypocalcemia-related disorder (4 years) and genetic confirmation of ADH1 (25 years).[SUP]2[/SUP]",
   },
   "Confirming Diagnosis": {
-    question: "How is a diagnosis of ADH1[BR]definitively confirmed?",
+    question: "How is a diagnosis of ADH1 most reliably distinguished from other forms of hypoparathyroidism?",
     answers: [
       { text: "Kidney ultrasound showing nephrocalcinosis", correct: false },
       { text: "Parathyroid hormone (PTH) test and 24–hour urine test", correct: false },
       {
         text: "Genetic testing",
-        display: "Genetic testing[SUP]1[/SUP]",
+        display: "Genetic testing[SUP]5[/SUP]",
         correct: true,
       },
     ],
-    explanation: "Genetic testing is the only way to determine whether[BR]you carry any of the 26 genes known to cause hypoparathyroidism, including the calcium-sensing receptor gene ([I]CASR[/I]) that causes ADH1.[SUP]1[/SUP]",
+    explanation: "Genetic testing can help confirm ADH1 by identifying a clinically relevant [I]CASR[/I] variant alongside supportive clinical features and laboratory findings.[SUP]5[/SUP]",
   },
   "Limitations of Conventional Therapy": {
-    question: "True or False:[BR]Conventional therapy for hypoparathyroidism using calcium supplementation and active vitamin D (calcitriol) is effective at controlling both serum calcium and urine calcium.[SUP]2[/SUP]",
+    question: "True or False:[BR]In ADH1, conventional therapy with calcium supplementation and active vitamin D reliably controls both serum calcium and urine calcium.[SUP]2[/SUP]",
     answers: [
       { text: "True", correct: false },
       { text: "False", correct: true },
     ],
-    explanation: "Conventional therapy effectively regulates calcium but does not address the continued CaSR dysfunction in the kidneys, which may lead to increased urine calcium excretion.[SUP]2[/SUP]",
+    explanation: "In ADH1, conventional therapy may improve serum calcium and symptoms, but it often does not control urine calcium because the underlying renal calcium-sensing receptor abnormality persists.[SUP]2[/SUP]",
   },
 };
 
@@ -136,7 +136,7 @@ export function QuizScreen({ topic, questionNumber, totalQuestions, currentScore
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-start px-8 pt-60 pb-10"
+      className="absolute inset-0 bg-[#1a1a1c] overflow-hidden flex flex-col items-center justify-start px-8 pt-[170px] pb-10"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 z-0">

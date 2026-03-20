@@ -14,6 +14,7 @@ const references = [
   "Roszko KL, Stapleton Smith LM, Sridhar AV, et al. Autosomal dominant hypocalcemia type 1: a systematic review. [I]J Bone Miner Res[/I]. 2022;37(10):1926–1935. doi:10.1002/jbmr.4659",
   "De Coster T, David K, Breckpot J, Decallonne B. Management of autosomal dominant hypocalcemia type 1: literature review and clinical practice recommendations. [I]J Endocrinol Invest.[/I] 2025;48:831–844. doi:10.1007/s40618-024-02496-y",
   "Khan S, Khan AA. Hypoparathyroidism: diagnosis, management and emerging therapies. [I]Nat Rev Endocrinol[/I]. 2025;21(6):360–374. doi:10.1038/s41574-024-01075-8",
+  "Khan AA, Ali DS, Bilezikian JP, et al. Best practice recommendations for the diagnosis and management of hypoparathyroidism. [I]Metabolism[/I]. 2025;171:156335. doi:10.1016/j.metabol.2025.156335",
 ];
 
 interface FooterProps {
